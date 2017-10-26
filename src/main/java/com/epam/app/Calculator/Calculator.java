@@ -20,7 +20,17 @@ public class Calculator {
     }
 
     public void validation(String input) throws Exception{
-
+            if(!isCorrectBrackets(input))
+                throw new Exception();
+            if(algorithm.isOperator(input.charAt(input.length()-1)))
+                throw new Exception();
+            for(int i = 0; i<input.length(); i++){
+                if(!(Character.isDigit(input.charAt(i)) || algorithm.isOperator(input.charAt(i))))
+                    throw new Exception();
+                if(algorithm.isOperator(input.charAt(i)) && algorithm.isOperator(input.charAt(i+1))){
+                    
+                }
+            }
 
     }
 

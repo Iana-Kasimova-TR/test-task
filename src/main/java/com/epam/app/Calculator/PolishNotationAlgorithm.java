@@ -64,7 +64,7 @@ public class PolishNotationAlgorithm {
         }
 
 
-    private static boolean isOperator(char c) {
+    protected static boolean isOperator(char c) {
         switch (c) {
             case '-':
             case '+':
