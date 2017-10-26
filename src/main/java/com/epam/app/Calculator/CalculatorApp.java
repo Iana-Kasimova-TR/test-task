@@ -15,7 +15,7 @@ public class CalculatorApp {
 
     public static void main(String[] args) {
         BufferedReader br = null;
-        String input;
+        String input ="";
         try {
 
 
@@ -38,7 +38,11 @@ public class CalculatorApp {
 
         ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         Calculator calc = ctx.getBean("calc");
-        calc.validation(input);
+        try{
+            calc.validation(input);
+        }catch (Exception e){
+            System.out.println("expression is not valid, try again!");
+        }
         calc.calculate(input);
     }
 }

@@ -16,25 +16,25 @@ public class PolishNotationAlgorithm {
 
         for(int i=0; i<input.length(); i++){
             symbol = input.charAt(i);
+            symbolInStack = operationStack.charAt(operationStack.length() - 1);
             if(Character.isDigit(symbol))
             {
-                while(Character.isDigit(input.charAt(i+1))){
-
-
-
-
+                while(Character.isDigit(input.charAt(i+1))) {
+                    symbol += input.charAt(i + 1);
+                    i++;
+                }
+                i+=1;
                 arrayOfOut.append(symbol);
             }else if(isOperator(symbol))
             {
                 while((operationStack.length()>0)){
-                    symbolInStack = operationStack.charAt(operationStack.length() - 1);
                     if (isEqualPriority(symbol, symbolInStack)) {
                         arrayOfOut.append(symbolInStack);
                         operationStack = operationStack.deleteCharAt(operationStack.length() - 1);
                         operationStack.append(symbol);
                         break;
                     } else if (symbol == whichMorePriority(symbol, symbolInStack)) {
-                        operationStack.append(symbol);
+                        arrayOfOut.append(symbol);
                         break;
                     } else {
                         arrayOfOut.append(symbolInStack);
@@ -42,10 +42,27 @@ public class PolishNotationAlgorithm {
                         operationStack.append(symbol);
                     }
                 }
-                }
+                }else if(symbol == '('){
+                        operationStack.append('(');
+                }else if(symbol == ')'){
+                    char symbolInStackAfterBracket = symbolInStack;
+                    while('('!=symbolInStackAfterBracket){
+                        arrayOfOut.append(symbolInStackAfterBracket);
+                        operationStack.deleteCharAt(operationStack.length()-1);
+                        symbolInStackAfterBracket = operationStack.charAt(operationStack.length()-1);
+                    }
+                operationStack.deleteCharAt(operationStack.length()-1);
             }
+            }
+
+                for(int i = operationStack.length()-1; i>0; i--){
+                    arrayOfOut.append(operationStack.charAt(i));
+                }
+
+
+                return arrayOfOut;
         }
-    }
+
 
     private static boolean isOperator(char c) {
         switch (c) {
