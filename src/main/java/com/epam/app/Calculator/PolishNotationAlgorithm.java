@@ -1,67 +1,58 @@
 package com.epam.app.Calculator;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * Created by Iana_Kasimova on 10/26/2017.
  */
 public class PolishNotationAlgorithm {
 
-    protected StringBuilder algorithm(String input){
-        StringBuilder arrayOfOut = new StringBuilder();
-        StringBuilder operationStack = new StringBuilder();
+    protected StringBuilder algorithm(String input) throws Exception{
+        StringBuilder operationStack = new StringBuilder("");
+        StringBuilder arrayOfOut = new StringBuilder("");
+        char symbol, symbolInStack;
 
-        char symbolInArray, symbolInStack, symbol;
-
-
-        for(int i=0; i<input.length(); i++){
+        for (int i = 0; i < input.length(); i++) {
             symbol = input.charAt(i);
-            symbolInStack = operationStack.charAt(operationStack.length() - 1);
-            if(Character.isDigit(symbol))
-            {
-                while(Character.isDigit(input.charAt(i+1))) {
-                    symbol += input.charAt(i + 1);
-                    i++;
-                }
-                i+=1;
-                arrayOfOut.append(symbol);
-            }else if(isOperator(symbol))
-            {
-                while((operationStack.length()>0)){
-                    if (isEqualPriority(symbol, symbolInStack)) {
-                        arrayOfOut.append(symbolInStack);
-                        operationStack = operationStack.deleteCharAt(operationStack.length() - 1);
-                        operationStack.append(symbol);
-                        break;
-                    } else if (symbol == whichMorePriority(symbol, symbolInStack)) {
-                        arrayOfOut.append(symbol);
-                        break;
+
+            if (isOperator(symbol)) {
+                while (operationStack.length() > 0) {
+                    symbolInStack = operationStack.substring(operationStack.length()-1).charAt(0);
+                    if (isOperator(symbolInStack) && (opPrior(symbol) <= opPrior(symbolInStack))) {
+                        arrayOfOut.append(" ").append(symbolInStack).append(" ");
+                        operationStack.setLength(operationStack.length()-1);
                     } else {
-                        arrayOfOut.append(symbolInStack);
-                        operationStack = operationStack.deleteCharAt(operationStack.length() - 1);
-                        operationStack.append(symbol);
+                        arrayOfOut.append(" ");
+                        break;
                     }
                 }
-                }else if(symbol == '('){
-                        operationStack.append('(');
-                }else if(symbol == ')'){
-                    char symbolInStackAfterBracket = symbolInStack;
-                    while('('!=symbolInStackAfterBracket){
-                        arrayOfOut.append(symbolInStackAfterBracket);
-                        operationStack.deleteCharAt(operationStack.length()-1);
-                        symbolInStackAfterBracket = operationStack.charAt(operationStack.length()-1);
+                arrayOfOut.append(" ");
+                operationStack.append(symbol);
+            } else if ('(' == symbol) {
+                operationStack.append(symbol);
+            } else if (')' == symbol) {
+                symbolInStack = operationStack.substring(operationStack.length()-1).charAt(0);
+                while ('(' != symbolInStack) {
+                    if (operationStack.length() < 1) {
+                        throw new Exception("Parse error occurred. Check the correctness of the expression.");
                     }
-                operationStack.deleteCharAt(operationStack.length()-1);
-            }
-            }
-
-                for(int i = operationStack.length()-1; i>0; i--){
-                    arrayOfOut.append(operationStack.charAt(i));
+                    arrayOfOut.append(" ").append(symbolInStack);
+                    operationStack.setLength(operationStack.length()-1);
+                    symbolInStack = operationStack.substring(operationStack.length()-1).charAt(0);
                 }
-
-
-                return arrayOfOut;
+                operationStack.setLength(operationStack.length()-1);
+            } else {
+                // If the character is not an operator, add it to the output sequence
+                arrayOfOut.append(symbol);
+            }
         }
+
+        // If there are operators left on the stack, we add them to the input line
+        while (operationStack.length() > 0) {
+            arrayOfOut.append(" ").append(operationStack.substring(operationStack.length()-1));
+            operationStack.setLength(operationStack.length()-1);
+        }
+
+        return  arrayOfOut;
+    }
 
 
     protected static boolean isOperator(char c) {
@@ -76,26 +67,15 @@ public class PolishNotationAlgorithm {
         return false;
     }
 
-    private static boolean isEqualPriority(char a, char b){
-        if(((a == '+') || (a == '-')) && ((b == '-') || (b == '+'))){
-            return true;
-        }else if(((a == '*') || (a == '/')) && ((b == '/') || (b == '*'))){
-            return true;
+    private static byte opPrior(char op) {
+        switch (op) {
+            case '^':
+                return 3;
+            case '*':
+            case '/':
+            case '%':
+                return 2;
         }
-        else{
-            return false;
-        }
+        return 1;
     }
-
-    private static char whichMorePriority(char a, char b) {
-        char result = ' ';
-        if (((a == '+') || (a == '-')) && ((b == '*') || (b == '/'))) {
-            result = b;
-        } else if (((a == '*') || (a == '/')) && ((b == '+') || (b == '-'))) {
-            result = a;
-        }
-
-        return result;
-    }
-
 }

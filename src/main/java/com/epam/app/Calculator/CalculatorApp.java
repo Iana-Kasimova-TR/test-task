@@ -5,44 +5,39 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+
+import java.util.Scanner;
 
 /**
  * Created by Iana_Kasimova on 10/26/2017.
  */
+
 public class CalculatorApp {
 
+    Calculator calc;
+
+    public CalculatorApp(Calculator calc){
+        this.calc = calc;
+    }
+
     public static void main(String[] args) {
-        BufferedReader br = null;
-        String input ="";
-        try {
+        Scanner scanner = new Scanner(System.in);
 
 
-            while (true) {
-                System.out.println("Enter a expression");
-                input = br.readLine();
-            }
+        while (true) {
+            System.out.println("Enter a expression");
+            String input = scanner.nextLine();
+            scanner.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+            Calculator calc = (Calculator) ctx.getBean("calculator");
+            try {
+                calc.validation(input);
+                System.out.println(calc.calculate(input));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("expression is not valid, try again!");
             }
         }
-
-        ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-        Calculator calc = ctx.getBean("calc");
-        try{
-            calc.validation(input);
-        }catch (Exception e){
-            System.out.println("expression is not valid, try again!");
-        }
-        calc.calculate(input);
     }
 }
