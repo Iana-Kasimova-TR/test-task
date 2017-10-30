@@ -1,4 +1,4 @@
-package com.epam.app.Vouchers;
+package com.epam.app.Chief;
 
 /**
  * Created by Iana_Kasimova on 10/27/2017.

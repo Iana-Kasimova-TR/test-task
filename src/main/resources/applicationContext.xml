@@ -15,4 +15,31 @@
 
     <bean id="polishNotation" class="com.epam.app.Calculator.PolishNotationAlgorithm"/>
 
+    <bean id="stream" class="com.epam.app.Chief.IOStream.InputOutputStream">
+            <constructor-arg value="C:/User/Iana/Documents/data.txt"/>
+    </bean>
+
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+
+        <property name="driverClassName" value="com.mysql.jdbc" />
+        <property name="url" value="jdbc:mysql://localhost:3306" />
+        <property name="username" value="root" />
+        <property name="password" value="password" />
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+    <bean id="XMLConverter" class="com.epam.app.Chief.Xml.XMLConverter.XMLConverter">
+        <property name="marshaller" ref="castorMarshaller" />
+        <property name="unmarshaller" ref="castorMarshaller" />
+    </bean>
+
+
+    <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
+
+
 </beans>
